@@ -527,7 +527,11 @@ public class PaperController {
                     essayQuestions.add(questionById);
                 }
             }
-            File file = new File(request.getServletContext().getRealPath("/resource/uploadImg/temp.pdf"));
+            File fileDir = new File(request.getServletContext().getRealPath("/resource/uploadImg/"));
+            if (!fileDir.exists()) {
+				fileDir.mkdirs();
+			}
+            File file = new File(fileDir + "temp.pdf");
             Document document = new Document();
             PdfWriter writer;
             try {
