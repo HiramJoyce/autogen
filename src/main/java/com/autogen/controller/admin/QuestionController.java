@@ -51,14 +51,7 @@ public class QuestionController {
         }
         System.out.println("-> addQuestion ->");
         System.out.println(question);
-        if (question.getType() == 1) {
-            if (question.getRightOption() == null || question.getRightOption().equals("") || question.getRightOption().length() <= 0) {
-                question.setRightOption("A");
-            }
-            if (question.getRightOption().split(",").length > 1) {
-                question.setRightOption(question.getRightOption().split(",")[0]);
-            }
-        }
+        checkRightOption(question);
         Question addQuestion = questionService.addQuestion(question);
         if (addQuestion != null) {
             model.addAttribute("question", addQuestion);
@@ -100,12 +93,24 @@ public class QuestionController {
         }
         System.out.println("-> updateQuestion ->");
         System.out.println(question);
+        checkRightOption(question);
         Question addQuestion = questionService.updateQuestion(question);
         if (addQuestion != null) {
             model.addAttribute("question", addQuestion);
             return "admin/question";
         }
         return "redirect:/questionsPage";
+    }
+
+    private void checkRightOption(Question question) {
+        if (question.getType() == 1) {
+            if (question.getRightOption() == null || question.getRightOption().equals("") || question.getRightOption().length() <= 0) {
+                question.setRightOption("A");
+            }
+            if (question.getRightOption().split(",").length > 1) {
+                question.setRightOption(question.getRightOption().split(",")[0]);
+            }
+        }
     }
 
     @RequestMapping("/deleteQuestion")
