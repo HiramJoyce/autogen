@@ -92,7 +92,7 @@
             </h1>
         </div>
 
-        <form action="/takePaper" id="paperForm" method="post">
+        <form action="${ctx}/takePaper" id="paperForm" method="post">
             <input type="hidden" name="paperId" value="${paper.id}">
             <input type="hidden" name="userId" value="<%=session.getAttribute("id")%>">
             <div style="width: 600px; margin: auto;">

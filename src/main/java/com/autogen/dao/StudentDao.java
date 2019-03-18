@@ -9,4 +9,6 @@ public interface StudentDao {
 	Student selectStudentByUserName(String userName);
 
 	int insertStudent(Student student);
+
+	Student selectStudentById(String id);
 }

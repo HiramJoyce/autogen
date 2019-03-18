@@ -33,4 +33,10 @@ public class StudentServiceImpl implements StudentService {
 		return studentDao.insertStudent(student) > 0 ? student : null;
 	}
 
+	@Override
+	public Student getStudentById(String id) {
+		return studentDao.selectStudentById(id);
+	}
+
+	
 }

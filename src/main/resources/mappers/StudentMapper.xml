@@ -15,6 +15,9 @@
     <select id="selectStudentByUserName" resultMap="studentMap">
         select <include refid="base_column"/> from student where user_name=#{userName};
     </select>
+    <select id="selectStudentById" resultMap="studentMap">
+        select <include refid="base_column"/> from student where id=#{id};
+    </select>
     <insert id="insertStudent" parameterType="com.autogen.domain.Student">
         INSERT INTO student (<include refid="base_column"/>) VALUES (#{id}, #{userName}, #{realName}, #{password})
     </insert>
