@@ -44,7 +44,10 @@ public class PaperController {
 	private StudentService studentService;
 
 	@RequestMapping("/papersPage")
-	public String toQuestionPage(Model model) {
+	public String toQuestionPage(Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
 		List<Paper> papers = paperService.getAllPapers();
 		model.addAttribute("papers", papers);
 		System.out.println(papers);
@@ -52,7 +55,10 @@ public class PaperController {
 	}
 
 	@RequestMapping("/addPaper")
-	public String toAddPaper(Model model) {
+	public String toAddPaper(Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
 		List<Question> questions = questionService.getAllQuestions();
 		model.addAttribute("questions", questions);
 		return "admin/paperAdd";
@@ -78,10 +84,13 @@ public class PaperController {
 		List<Question> fillingQuestionsList = new ArrayList<>();
 		List<Question> essayQuestionsList = new ArrayList<>();
 		if (chapterSectionsStr == null || chapterSectionsStr.equals("") || chapterSectionsStr.equals("all")) {
+            System.out.println("-> 生成试卷未填写章节，默认全选");
 			radioQuestionsList.addAll(questionService.getQuestionsByChapterSectionLevelType(null, null,
 					Arrays.asList(radioLevel.split(",")), 1));
 			multipleQuestionsList.addAll(questionService.getQuestionsByChapterSectionLevelType(null, null,
 					Arrays.asList(multipleLevel.split(",")), 2));
+            System.out.println(multipleQuestionsList);
+            System.out.println("multipleQuestionsList.size() = " +multipleQuestionsList.size());
 			judgeQuestionsList.addAll(questionService.getQuestionsByChapterSectionLevelType(null, null,
 					Arrays.asList(judgeLevel.split(",")), 3));
 			fillingQuestionsList.addAll(questionService.getQuestionsByChapterSectionLevelType(null, null,
@@ -94,7 +103,7 @@ public class PaperController {
 				if (chapterSection.split("-").length > 1) {
 					String chapter = chapterSection.split("-")[0];
 					String section = chapterSection.split("-")[1];
-					System.out.println(chapter + " " + section + " " + radioLevel + " " + 1);
+					System.out.println(chapter + " " + section + " " + radioLevel);
 					radioQuestionsList.addAll(questionService.getQuestionsByChapterSectionLevelType(chapter, section,
 							Arrays.asList(radioLevel.split(",")), 1));
 					multipleQuestionsList.addAll(questionService.getQuestionsByChapterSectionLevelType(chapter, section,
@@ -154,6 +163,7 @@ public class PaperController {
 		} else if (multipleQuestionsList.size() == multipleNum) {
 			StringBuilder multipleIds = new StringBuilder();
 			multipleQuestionsList.forEach((question) -> multipleIds.append(question.getId()).append(","));
+            System.out.println("-> 多选 id");
 			paper.setMultipleIds(
 					multipleIds.length() > 0 ? multipleIds.toString().substring(0, multipleIds.length() - 1) : null);
 			model.addAttribute("multipleQuestions", multipleQuestionsList);
@@ -162,7 +172,7 @@ public class PaperController {
 					.forEach((index) -> multipleQuestions.add(multipleQuestionsList.get(index)));
 			StringBuilder multipleIds = new StringBuilder();
 			multipleQuestions.forEach((question) -> multipleIds.append(question.getId()).append(","));
-			paper.setRadioIds(
+			paper.setMultipleIds(
 					multipleIds.length() > 0 ? multipleIds.toString().substring(0, multipleIds.length() - 1) : null);
 			model.addAttribute("multipleQuestions", multipleQuestions);
 		}
@@ -357,7 +367,10 @@ public class PaperController {
 	}
 
 	@RequestMapping("/queryPaper")
-	public String queryQuestion(String id, Model model) throws UnsupportedEncodingException {
+	public String queryQuestion(String id, Model model, HttpServletRequest request) throws UnsupportedEncodingException {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
 		Paper paper = paperService.getPaperById(id);
 		if (paper != null) {
 			List<Question> radioQuestions = new ArrayList<>();
@@ -419,6 +432,12 @@ public class PaperController {
 			model.addAttribute("error", "请登录后参加考试!");
 			return "index";
 		}
+        if (request.getSession().getAttribute("role").equals("admin")) {
+            List<Paper> allPapers = paperService.getAllPapers();
+            model.addAttribute("papers", allPapers);
+            model.addAttribute("error", "管理员无法参加考试!");
+            return "index";
+        }
 		Paper paper = paperService.getPaperById(id);
 		if (paper != null) {
 			List<Question> radioQuestions = new ArrayList<>();
@@ -474,22 +493,21 @@ public class PaperController {
 
 	@RequestMapping(value = "takePaper", method = RequestMethod.POST)
 	public String takePaper(String paperId, String userId, HttpServletRequest request, Model model) {
-		System.out.printf("-> 交卷 : " + paperId + " - " + userId);
-
-		Map<String, String> parameters = new HashMap<>();
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String parameterName = parameterNames.nextElement();
-			parameters.put(parameterName, request.getParameter(parameterName));
-		}
-		System.out.println(parameters);
-
-		Student student = studentService.getStudentById(userId);
+		System.out.println("-> 交卷 : " + paperId + " - " + userId);
+        if (request.getSession().getAttribute("role") != null && request.getSession().getAttribute("role").equals("admin")) {
+            List<Paper> allPapers = paperService.getAllPapers();
+            model.addAttribute("papers", allPapers);
+            model.addAttribute("error", "管理员无法参加考试!");
+            return "index";
+        }
+        Student student = studentService.getStudentById(userId);
 		// 自动评卷，支持单选多选和判断题
 		Paper paper = paperService.getPaperById(paperId);
 		List<ErrorQuestion> errorRadioQuestions = new ArrayList<>();
 		List<ErrorQuestion> errorMultipleQuestions = new ArrayList<>();
 		List<ErrorQuestion> errorJudgeQuestions = new ArrayList<>();
+		List<ErrorQuestion> errorFillingQuestions = new ArrayList<>();
+		List<ErrorQuestion> errorEssayQuestions = new ArrayList<>();
 		if (paper != null) {
 			Question question;
 			ErrorQuestion errorQuestion;
@@ -545,7 +563,7 @@ public class PaperController {
 				for (String judgeId : judgeIds) {
 					question = questionService.getQuestionById(judgeId);
 					if (question != null) {
-						if (!question.getRightJudge() == Boolean.parseBoolean(request.getParameter(judgeId))) {
+						if (question.getRightJudge() != Boolean.parseBoolean(request.getParameter(judgeId))) {
 							errorQuestion = new ErrorQuestion();
 							errorQuestion.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 							errorQuestion.setQuestion(question);
@@ -558,17 +576,58 @@ public class PaperController {
 					}
 				}
 			}
+			if (paper.getFillingNum() > 0) {
+				String[] fillingIds = paper.getFillingIds().split(",");
+				for (String fillingId : fillingIds) {
+					question = questionService.getQuestionById(fillingId);
+					if (question != null) {
+//						if (!question.getRightFilling().equals(request.getParameter(fillingId))) {
+							errorQuestion = new ErrorQuestion();
+							errorQuestion.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+							errorQuestion.setQuestion(question);
+							errorQuestion.setType(question.getType());
+							errorQuestion.setStudent(student);
+							errorQuestion.setMyFilling(request.getParameter(fillingId));
+							System.out.println(errorQuestion);
+							errorFillingQuestions.add(errorQuestion);
+//						}
+					}
+				}
+			}
+			if (paper.getEssayNum() > 0) {
+				String[] essayIds = paper.getEssayIds().split(",");
+				for (String essayId : essayIds) {
+					question = questionService.getQuestionById(essayId);
+					if (question != null) {
+//						if (!question.getRightFilling().equals(request.getParameter(essayId))) {
+							errorQuestion = new ErrorQuestion();
+							errorQuestion.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+							errorQuestion.setQuestion(question);
+							errorQuestion.setType(question.getType());
+							errorQuestion.setStudent(student);
+							errorQuestion.setMyEssay(request.getParameter(essayId));
+							System.out.println(errorQuestion);
+							errorEssayQuestions.add(errorQuestion);
+//						}
+					}
+				}
+			}
 			model.addAttribute("errorRadioQuestions", errorRadioQuestions);
 			model.addAttribute("errorMultipleQuestions", errorMultipleQuestions);
 			model.addAttribute("errorJudgeQuestions", errorJudgeQuestions);
+			model.addAttribute("errorFillingQuestions", errorFillingQuestions);
+			model.addAttribute("errorEssayQuestions", errorEssayQuestions);
 			model.addAttribute("paper", paper);
-			return "student/paperRusult";
+			return "student/paperResult";
 		}
 		return "redirect:/";
 	}
 
 	@RequestMapping("/deletePaper")
-	public String deletePaper(String id) {
+	public String deletePaper(String id, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
 		if (id != null) {
 			String ids[] = id.split(",");
 			for (String id1 : ids) {
@@ -579,7 +638,10 @@ public class PaperController {
 	}
 
 	@RequestMapping("/updatePaper")
-	public String updatePaper(String id, Model model) throws UnsupportedEncodingException {
+	public String updatePaper(String id, Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
 		Paper paper = paperService.getPaperById(id);
 		if (paper != null) {
 			model.addAttribute("paper", paper);

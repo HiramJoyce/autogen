@@ -14,7 +14,6 @@ import java.util.List;
  * @author hiram 2019年03月17日 22:59
  */
 @Controller
-@RequestMapping("/")
 public class IndexController {
     @Autowired
     private PaperService paperService;

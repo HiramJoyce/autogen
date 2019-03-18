@@ -20,7 +20,12 @@ public class AdminController {
 	public String adminLoginPage() {
 		return "admin/loginPage";
 	}
-	
+
+	@RequestMapping("/admin/login")
+	public String adminlogin() {
+		return "admin/loginPage";
+	}
+
 	@RequestMapping(value = "/admin/login", method=RequestMethod.POST)
 	public String adminLogin(String userName, String password, HttpServletRequest request) {
 		System.out.println("admin login -> userName : " + userName + " password : " + password);
@@ -28,6 +33,7 @@ public class AdminController {
 		if (admin != null) {
 			request.getSession().setAttribute("id", admin.getId());
 			request.getSession().setAttribute("userName", admin.getUserName());
+			request.getSession().setAttribute("realName", admin.getUserName());
 			request.getSession().setAttribute("role", "admin");
 			System.out.println("admin login success!");
 			return "admin/adminPage";

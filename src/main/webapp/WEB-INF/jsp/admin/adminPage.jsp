@@ -10,6 +10,7 @@
     <link type="text/css" rel="stylesheet" href="${ctx}/resource/bootstrap-3.3.7-dist/css/bootstrap.min.css" />
 </head>
 <body style="height: 100%;">
+<% if(request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) response.sendRedirect("/admin/loginPage"); %>
 <form name="icform" method="post"></form>
 <div class="container-fluid" style="height: 100%; margin: 0; padding: 0;">
 <nav class="navbar navbar-inverse" style="border-radius: 0; margin-bottom: 0; position: relative;">
@@ -22,7 +23,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Lawyer Online</a>
+            <a class="navbar-brand" href="/">C语言课程自动组卷后台管理系统</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -33,13 +34,16 @@
                         if (session.getAttribute("id") == null) {
                     %>
                     <div class="btn-group" role="group" aria-label="...">
-                        <a href="/login" type="button" class="btn btn-link navbar-btn">登录</a>
-                        <a href="/register" type="button" class="btn btn-link navbar-btn">注册</a>
+                        <a type="button" class="btn btn-link navbar-btn" data-toggle="modal" data-target="#myModal">登录</a>
+                        <a type="button" class="btn btn-link navbar-btn" data-toggle="modal" data-target="#myModal2">注册</a>
                     </div>
                     <%
                     } else {
                     %>
-                    <a href="/<%=session.getAttribute("role")%>/index"><%=session.getAttribute("realName")%></a>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <a href="#" type="button" class="btn btn-link navbar-btn"><%=session.getAttribute("realName")%></a>
+                        <a href="${ctx}/logout" class="btn btn-link navbar-btn">注销</a>
+                    </div>
                     <%
                         }
                     %>
@@ -49,9 +53,10 @@
     </div><!-- /.container-fluid -->
 </nav>
     <div style="width: 150px; background: #718093; float: left; height: 100%; margin-top: -50px; padding-top: 50px;">
-        <button class="btn btn-link" style="color: whitesmoke;" href="javascript:" onclick="formSubmit('/questionsPage','mframe');this.blur();">题库管理</button>
-        <br>
-        <button class="btn btn-link" style="color: whitesmoke;" href="javascript:" onclick="formSubmit('/papersPage','mframe');this.blur();">试卷管理</button>
+        <div style="margin: auto; text-align: center;">
+            <button class="btn btn-link" style="color: #FFFFFF; margin-top: 10px;" href="javascript:" onclick="formSubmit('/questionsPage','mframe');this.blur();">题库管理</button>
+            <button class="btn btn-link" style="color: #FFFFFF;" href="javascript:" onclick="formSubmit('/papersPage','mframe');this.blur();">试卷管理</button>
+        </div>
     </div>
     <div style="margin-left: 150px; height: 100%; margin-top: -50px; padding-top: 50px;">
         <iframe name="mframe" id="mframe" width="100%" src="/questionsPage" style="height: 100%;" frameborder="0"></iframe>

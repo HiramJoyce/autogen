@@ -26,7 +26,10 @@ public class QuestionController {
     private QuestionService questionService;
 
     @RequestMapping("/questionsPage")
-    public String toQuestionPage(Model model) {
+    public String toQuestionPage(Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         List<Question> questions = questionService.getAllQuestions();
         model.addAttribute("questions", questions);
         System.out.println(questions);
@@ -34,12 +37,18 @@ public class QuestionController {
     }
 
     @RequestMapping("/addQuestion")
-    public String toAddQuestion() {
+    public String toAddQuestion(HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         return "admin/questionAdd";
     }
 
     @RequestMapping(value = "/addQuestion", method = RequestMethod.POST)
-    public String addQuestion(Question question, Model model) throws UnsupportedEncodingException {
+    public String addQuestion(Question question, Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         System.out.println("-> addQuestion ->");
         System.out.println(question);
         Question addQuestion = questionService.addQuestion(question);
@@ -51,7 +60,10 @@ public class QuestionController {
     }
 
     @RequestMapping("/queryQuestion")
-    public String queryQuestion(String id, Model model) throws UnsupportedEncodingException {
+    public String queryQuestion(String id, Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         Question addQuestion = questionService.getQuestionById(id);
         if (addQuestion != null) {
             model.addAttribute("question", addQuestion);
@@ -61,7 +73,10 @@ public class QuestionController {
     }
 
     @RequestMapping("/updateQuestion")
-    public String updateQuestion(String id, Model model) throws UnsupportedEncodingException {
+    public String updateQuestion(String id, Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         Question addQuestion = questionService.getQuestionById(id);
         if (addQuestion != null) {
             model.addAttribute("question", addQuestion);
@@ -71,7 +86,10 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/updateQuestion", method = RequestMethod.POST)
-    public String updateQuestion(Question question, Model model) throws UnsupportedEncodingException {
+    public String updateQuestion(Question question, Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         System.out.println("-> updateQuestion ->");
         System.out.println(question);
         Question addQuestion = questionService.updateQuestion(question);
@@ -83,7 +101,10 @@ public class QuestionController {
     }
 
     @RequestMapping("/deleteQuestion")
-    public String deleteQuestion(String id) {
+    public String deleteQuestion(String id, HttpServletRequest request) {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         if (id != null) {
             String ids[] = id.split(",");
             for (String id1 : ids) {
@@ -96,6 +117,9 @@ public class QuestionController {
     @RequestMapping(value = "uploadQuestions", method = RequestMethod.POST)
     public String uploadQuestions(@RequestParam(value = "excelFile") MultipartFile excelFile, Model model,
                                   HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (request.getSession().getAttribute("role") == null || !request.getSession().getAttribute("role").equals("admin")) {
+            return "404";
+        }
         System.out.println("-> uploadQuestions start");
         //判断文件是否为空
         List<Question> questions = questionService.getAllQuestions();

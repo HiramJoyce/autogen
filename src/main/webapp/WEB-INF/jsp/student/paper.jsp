@@ -86,16 +86,16 @@
                         <c:if test="${paper.level==3}">中等</c:if>
                         <c:if test="${paper.level==4}">较难</c:if>
                         <c:if test="${paper.level==5}">巨难</c:if>
+                        <a href="${ctx}/downPaper?paperId=${paper.id}">导出试卷</a>
                     </span>
-                    <a href="${ctx}/downPaper?paperId=${paper.id}">导出PDF</a>
                 </span>
             </h1>
         </div>
-
         <form action="${ctx}/takePaper" id="paperForm" method="post">
             <input type="hidden" name="paperId" value="${paper.id}">
             <input type="hidden" name="userId" value="<%=session.getAttribute("id")%>">
             <div style="width: 600px; margin: auto;">
+                <span style="color: red; margin-left: 10px;">Tips : 答题过程中刷新页面个将直接提交试卷！</span>
                 <c:if test="${paper.radioNum>0}">
                     <div style="margin: 10px;">
                         <p class="questionType">【单项选择题】</p>
@@ -324,10 +324,11 @@
                 hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
                 minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
                 second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+            } else {
+                submitPaper();
             }
             if (minute <= 9) minute = '0' + minute;
             if (second <= 9) second = '0' + second;
-            $('#day_show').html(day + "天");
             $('#hour_show').html('<s id="h"></s>' + hour + '时');
             $('#minute_show').html('<s></s>' + minute + '分');
             $('#second_show').html('<s></s>' + second + '秒');
@@ -340,6 +341,10 @@
     function submitPaper() {
         $("#paperForm").submit();
     }
+    function closeIt() {
+        $("#paperForm").submit();
+    }
+    window.onbeforeunload = submitPaper;
 </script>
 </body>
 </html>

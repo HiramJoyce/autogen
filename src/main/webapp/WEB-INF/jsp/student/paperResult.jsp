@@ -11,7 +11,7 @@
     <link type="text/css" rel="stylesheet" href="${ctx}/resource/bootstrap-3.3.7-dist/css/bootstrap.min.css"/>
     <style>
         .radio {
-            margin: 0;
+            margin: 0 10px;
         }
 
         .checkbox {
@@ -72,7 +72,8 @@
     </nav>
     <div class="container">
         <div>
-            <h1>${paper.title}
+            <h1>${paper.title} 测验结果</h1>
+            <div>
                 <span style="color: gray; font-size: 14px;">
                     <span style="color: gray; font-style: italic;">时长：${paper.time}分钟&nbsp;&nbsp;&nbsp;&nbsp;试卷难度：
                         <c:if test="${paper.level==1}">简单</c:if>
@@ -80,221 +81,150 @@
                         <c:if test="${paper.level==3}">中等</c:if>
                         <c:if test="${paper.level==4}">较难</c:if>
                         <c:if test="${paper.level==5}">巨难</c:if>
+                        <a href="${ctx}/downPaper?paperId=${paper.id}">导出试卷</a>
                     </span>
-                    <a href="${ctx}/downPaper?paperId=${paper.id}">导出PDF</a>
                 </span>
-            </h1>
+            </div>
         </div>
 
         <form action="${ctx}/takePaper" id="paperForm" method="post">
             <input type="hidden" name="paperId" value="${paper.id}">
             <input type="hidden" name="userId" value="<%=session.getAttribute("id")%>">
             <div style="width: 600px; margin: auto;">
-                <c:if test="${errorRadioQuestions>0}">
+                <c:if test="${fn:length(errorRadioQuestions) > 0}">
                     <div style="margin: 10px;">
-                        <p class="questionType">【单项选择题】</p>
-                        <c:forEach items="${radioQuestions}" var="question" varStatus="statu">
+                        <p class="questionType">【单项选择题 - 错题】</p>
+                        <c:forEach items="${errorRadioQuestions}" var="errQuestion" varStatus="statu">
                             <div style="margin: 10px 0;">
-                                <p>${statu.count}.${question.body}</p>
-                                <c:if test="${question.type==1}">
-                                    <table style="width: 100%; margin-left: 10px;">
+                                <p>${statu.count}.${errQuestion.question.body}</p>
+                                <c:if test="${errQuestion.question.type==1}">
+                                    <table style="width: 100%;">
                                         <tr>
                                             <td>
-                                                <c:if test="${question.optionNum>=1}">
-                                                    <div class="radio">
-                                                        <label>
-                                                            <input class="radio" type="radio" name="${question.id}" id="optionA"
-                                                                   value="A">A.${question.optionA}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=1}">
+                                                    <div class="radio">A.${errQuestion.question.optionA}</div>
                                                 </c:if>
                                             </td>
                                             <td>
-                                                <c:if test="${question.optionNum>=2}">
-                                                    <div class="radio">
-                                                        <label>
-                                                            <input type="radio" name="${question.id}" id="optionB"
-                                                                   value="B">B.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=2}">
+                                                    <div class="radio">B.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <c:if test="${question.optionNum>=3}">
-                                                    <div class="radio">
-                                                        <label>
-                                                            <input type="radio" name="${question.id}" id="optionC"
-                                                                   value="C">C.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=3}">
+                                                    <div class="radio">C.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                             <td>
-                                                <c:if test="${question.optionNum>=4}">
-                                                    <div class="radio">
-                                                        <label>
-                                                            <input type="radio" name="${question.id}" id="optionD"
-                                                                   value="D">D.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=4}">
+                                                    <div class="radio">D.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">
-                                                <c:if test="${question.optionNum==5}">
-                                                    <div class="radio">
-                                                        <label>
-                                                            <input type="radio" name="${question.id}" id="optionE"
-                                                                   value="E">E.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum==5}">
+                                                    <div class="radio">E.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                         </tr>
                                     </table>
                                 </c:if>
+                                <p style="margin-left: 10px;">正确答案 : <span
+                                        style="color: green;">${errQuestion.question.rightOption}&nbsp;&nbsp;&nbsp;&nbsp;</span>我的答案 : <span
+                                        style="color: red;">${errQuestion.myOption}</span></p>
                             </div>
                         </c:forEach>
                     </div>
                 </c:if>
-                <c:if test="${paper.multipleNum>0}">
+                <c:if test="${fn:length(errorMultipleQuestions)>0}">
                     <div style="margin: 10px;">
-                        <p class="questionType">【多项选择题】</p>
-                        <c:forEach items="${multipleQuestions}" var="question" varStatus="statu">
+                        <p class="questionType">【多项选择题 - 错题】</p>
+                        <c:forEach items="${errorMultipleQuestions}" var="errQuestion" varStatus="statu">
                             <div style="margin: 10px 0;">
-                                <p>${statu.count}.${question.body}</p>
-                                <c:if test="${question.type==2}">
+                                <p>${statu.count}.${errQuestion.question.body}</p>
+                                <c:if test="${errQuestion.question.type==2}">
                                     <table style="width: 100%; margin-left: 10px;">
                                         <tr>
                                             <td>
-                                                <c:if test="${question.optionNum>=1}">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" name="${question.id}" id="optionA"
-                                                                   value="A">A.${question.optionA}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=1}">
+                                                    <div class="checkbox">A.${errQuestion.question.optionA}</div>
                                                 </c:if>
                                             </td>
                                             <td>
-                                                <c:if test="${question.optionNum>=2}">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" name="${question.id}" id="optionB"
-                                                                   value="B">B.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=2}">
+                                                    <div class="checkbox">B.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <c:if test="${question.optionNum>=3}">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" name="${question.id}" id="optionC"
-                                                                   value="C">C.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=3}">
+                                                    <div class="checkbox">C.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                             <td>
-                                                <c:if test="${question.optionNum>=4}">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" name="${question.id}" id="optionD"
-                                                                   value="D">D.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum>=4}">
+                                                    <div class="checkbox">D.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">
-                                                <c:if test="${question.optionNum==5}">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" name="${question.id}" id="optionE"
-                                                                   value="E">E.${question.optionB}
-                                                        </label>
-                                                    </div>
+                                                <c:if test="${errQuestion.question.optionNum==5}">
+                                                    <div class="checkbox">E.${errQuestion.question.optionB}</div>
                                                 </c:if>
                                             </td>
                                         </tr>
                                     </table>
                                 </c:if>
+                                <p style="margin-left: 10px;">正确答案 : <span
+                                        style="color: green;">${errQuestion.question.rightOption}&nbsp;&nbsp;&nbsp;&nbsp;</span>我的答案 : <span
+                                        style="color: red;">${errQuestion.myOption}</span></p>
                             </div>
                         </c:forEach>
                     </div>
                 </c:if>
-                <c:if test="${paper.judgeNum>0}">
+                <c:if test="${fn:length(errorJudgeQuestions)>0}">
                     <div style="margin: 10px;">
-                        <p class="questionType">【判断题】</p>
-                        <c:forEach items="${judgeQuestions}" var="question" varStatus="statu">
+                        <p class="questionType">【判断题 - 错题】</p>
+                        <c:forEach items="${errorJudgeQuestions}" var="errQuestion" varStatus="statu">
                             <div style="margin: 10px 0;">
-                                <p>${statu.count}.${question.body}</p>
-                                <c:if test="${question.type==3}">
-                                    <table style="width: 100%; margin-left: -10px;">
-                                        <tr>
-                                            <td>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        <input type="radio" name="${question.id}" value="true"> 正确
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        <input type="radio" name="${question.id}" value="false"> 错误
-                                                    </label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </c:if>
+                                <p>${statu.count}.${errQuestion.question.body}</p>
+                                <p class="radio">正确答案 : <span
+                                        style="color: green;">${errQuestion.question.rightJudge ? "正确" : "错误"}&nbsp;&nbsp;&nbsp;&nbsp;</span>我的答案 : <span
+                                        style="color: red;">${errQuestion.myJudge ? "正确" : "错误"}</span></p>
                             </div>
                         </c:forEach>
                     </div>
                 </c:if>
-                <c:if test="${paper.fillingNum>0}">
+                <h3>【填空题】与【问答题】暂不支持在线阅卷</h3>
+                <c:if test="${fn:length(errorFillingQuestions)>0}">
                     <div style="margin: 10px;">
                         <p class="questionType">【填空题】</p>
-                        <c:forEach items="${fillingQuestions}" var="question" varStatus="statu">
+                        <c:forEach items="${errorFillingQuestions}" var="errQuestion" varStatus="statu">
                             <div style="margin: 10px 0;">
-                                <p>${statu.count}.${question.body}</p>
-                                <c:if test="${question.type==4}">
-                                    <div style="margin-left: 15px;">
-                                        答案： <input type="text" id="filling"
-                                                   style="border: none; border-bottom:1px solid #000; width: 300px;"
-                                                   name="${question.id}">
-                                    </div>
-                                </c:if>
+                                <p>${statu.count}.${errQuestion.question.body}</p>
+                                <div class="radio">
+                                    <p>正确答案 : ${errQuestion.question.rightFilling}</p>
+                                    <p>我的答案 : ${errQuestion.myFilling}</p>
+                                </div>
                             </div>
                         </c:forEach>
                     </div>
                 </c:if>
-                <c:if test="${paper.essayNum>0}">
+                <c:if test="${fn:length(errorEssayQuestions)>0}">
                     <div style="margin: 10px;">
                         <p class="questionType">【问答题】</p>
-                        <c:forEach items="${essayQuestions}" var="question" varStatus="statu">
+                        <c:forEach items="${errorEssayQuestions}" var="errQuestion" varStatus="statu">
                             <div style="margin: 10px 0;">
-                                <p>${statu.count}.${question.body}</p>
-                                <c:if test="${question.type==5}">
-                                    <table style="width: 100%; margin-left: 15px;">
-                                        <tr>
-                                            <td style="vertical-align: top; width: 50px;">
-                                                答案：
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" id="essay" name="${question.id}" rows="3"></textarea>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </c:if>
+                                <p>${statu.count}.${errQuestion.question.body}</p>
+                                <div class="radio">
+                                    <p>正确答案 : ${errQuestion.question.rightEssay}</p>
+                                    <p>我的答案 : ${errQuestion.myEssay}</p>
+                                </div>
                             </div>
                         </c:forEach>
                     </div>

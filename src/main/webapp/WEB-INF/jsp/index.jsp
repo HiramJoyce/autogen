@@ -44,7 +44,7 @@
                         } else {
                         %>
                         <div class="btn-group" role="group" aria-label="...">
-                            <a href="/" type="button" class="btn btn-link navbar-btn"><%=session.getAttribute("realName")%></a>
+                            <a href="${ctx}/" type="button" class="btn btn-link navbar-btn"><%=session.getAttribute("realName")%></a>
                             <a href="${ctx}/logout" class="btn btn-link navbar-btn">注销</a>
                         </div>
                         <%
@@ -90,7 +90,7 @@
             </tr>
         </table>
     </div>
-    <div style="position: absolute; bottom: 0; text-align: center; width: 100%;"><a href="/admin/loginPage">管理员登录</a>
+    <div style="position: absolute; bottom: 0; text-align: center; width: 100%;"><a href="${ctx}/admin/loginPage">管理员登录</a>
     </div>
 </div>
 <!-- Modal -->
