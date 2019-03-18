@@ -28,10 +28,10 @@
         </c:if>
         <div style="margin-bottom: 10px;">
             <button class="btn btn-success" onclick="window.location.href='${ctx}/addQuestion'">添加</button>
-            <button class="btn btn-danger" onclick="deleteQuestion()">删除</button>
+            <button class="btn btn-danger" type="button" onclick="deleteQuestion()">删除</button>
             <button class="btn btn-info" data-toggle="modal" data-target="#myModal">导入</button>
         </div>
-        <form action="${ctx}/deleteQuestion" method="post">
+        <form id="allQuestions" action="${ctx}/deleteQuestion" method="post">
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -82,7 +82,7 @@
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
-        <form action="/uploadQuestions" method="post" enctype="multipart/form-data" onsubmit="return check();">
+        <form action="/uploadQuestions" method="post" enctype="multipart/form-data" onsubmit="return checkFile();">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
@@ -121,9 +121,9 @@
             alert("请选择要删除的记录！");
             return;
         }
-        $("form").submit();
+        $("#allQuestions").submit();
     }
-    function check() {
+    function checkFile() {
         var excelFile = $("#excelFile").val();
         if (excelFile === "" || excelFile.length === 0) {
             alert("请选择文件路径！");
