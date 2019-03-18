@@ -25,6 +25,11 @@
         input:focus {
             outline: none;
         }
+
+        .questionType {
+            font-size: 16px;
+            font-weight: 900;
+        }
     </style>
 </head>
 <body>
@@ -109,7 +114,8 @@
                                                 <c:if test="${question.optionNum>=1}">
                                                     <div class="radio">
                                                         <label>
-                                                            <input class="radio" type="radio" name="${question.id}" id="optionA"
+                                                            <input class="radio" type="radio" name="${question.id}"
+                                                                   id="optionA"
                                                                    value="A">A.${question.optionA}
                                                         </label>
                                                     </div>
@@ -296,7 +302,8 @@
                                                 答案：
                                             </td>
                                             <td>
-                                                <textarea class="form-control" id="essay" name="${question.id}" rows="3"></textarea>
+                                                <textarea class="form-control" id="essay" name="${question.id}"
+                                                          rows="3"></textarea>
                                             </td>
                                         </tr>
                                     </table>
@@ -335,15 +342,19 @@
             intDiff--;
         }, 1000);
     }
+
     $(function () {
         timer(intDiff);
     });
+
     function submitPaper() {
         $("#paperForm").submit();
     }
+
     function closeIt() {
         $("#paperForm").submit();
     }
+
     window.onbeforeunload = submitPaper;
 </script>
 </body>

@@ -51,6 +51,14 @@ public class QuestionController {
         }
         System.out.println("-> addQuestion ->");
         System.out.println(question);
+        if (question.getType() == 1) {
+            if (question.getRightOption() == null || question.getRightOption().equals("") || question.getRightOption().length() <= 0) {
+                question.setRightOption("A");
+            }
+            if (question.getRightOption().split(",").length > 1) {
+                question.setRightOption(question.getRightOption().split(",")[0]);
+            }
+        }
         Question addQuestion = questionService.addQuestion(question);
         if (addQuestion != null) {
             model.addAttribute("question", addQuestion);

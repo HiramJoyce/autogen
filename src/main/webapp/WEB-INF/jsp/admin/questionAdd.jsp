@@ -18,6 +18,7 @@
 <div class="container" style="padding: 20px;">
     <a href="#" onclick="history.back()">返回</a>
     <div style="width: 500px; margin: auto;">
+        <div style="margin: auto; text-align: center;"><span style="color: red;">Tips : 仅根据要添加的题型配置必要的参数即可！</span></div><br>
         <form  class="form-horizontal" action="/addQuestion" method="post">
             <div class="form-group">
                 <label for="chapter" class="col-sm-2 control-label">章</label>

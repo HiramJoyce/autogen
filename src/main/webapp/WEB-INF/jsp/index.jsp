@@ -161,6 +161,7 @@
 </div>
 <script src="${ctx}/resource/js/jquery-3.2.1.min.js"></script>
 <script src="${ctx}/resource/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="${ctx}/resource/js/canvas-nest.js"></script>
 <script>
     function check() {
         var userName = $("#userName2").val();

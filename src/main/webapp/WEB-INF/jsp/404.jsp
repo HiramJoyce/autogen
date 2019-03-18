@@ -19,5 +19,6 @@
     <a href="#" onclick="history.back()">返回</a>
     <div style="width: 300px; margin: 40px auto auto;"><h2>资源不存在或没有权限</h2></div>
 </div>
+<script src="${ctx}/resource/js/canvas-nest.js"></script>
 </body>
 </html>

@@ -9,6 +9,28 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>QuestionPage</title>
     <link type="text/css" rel="stylesheet" href="${ctx}/resource/bootstrap-3.3.7-dist/css/bootstrap.min.css"/>
+    <style>
+        .radio {
+            margin: 0;
+        }
+
+        .checkbox {
+            margin: 0;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        .questionType {
+            font-size: 16px;
+            font-weight: 900;
+        }
+    </style>
 </head>
 <body>
 <div class="container" style="padding: 20px;">
@@ -24,104 +46,163 @@
             】${question.body}</p>
         <br>
         <c:if test="${question.type==1}">
-            <c:if test="${question.optionNum>=1}">
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="option" id="optionA" value="A">A.${question.optionA}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum>=2}">
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="option" id="optionB" value="B">B.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum>=3}">
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="option" id="optionC" value="C">C.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum>=4}">
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="option" id="optionD" value="D">D.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum==5}">
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="option" id="optionE" value="E">E.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
+            <table style="width: 100%; margin-left: 10px;">
+                <tr>
+                    <td>
+                        <c:if test="${question.optionNum>=1}">
+                            <div class="radio">
+                                <label>
+                                    <input class="radio" type="radio" name="${question.id}" id="optionA"
+                                           value="A">A.${question.optionA}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                    <td>
+                        <c:if test="${question.optionNum>=2}">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="${question.id}" id="optionB"
+                                           value="B">B.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <c:if test="${question.optionNum>=3}">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="${question.id}" id="optionC"
+                                           value="C">C.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                    <td>
+                        <c:if test="${question.optionNum>=4}">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="${question.id}" id="optionD"
+                                           value="D">D.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <c:if test="${question.optionNum==5}">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="${question.id}" id="optionE"
+                                           value="E">E.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                </tr>
+            </table>
         </c:if>
         <c:if test="${question.type==2}">
-            <c:if test="${question.optionNum>=1}">
-                <div class="radio">
-                    <label>
-                        <input type="checkbox" name="option" id="optionA" value="A">A.${question.optionA}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum>=2}">
-                <div class="radio">
-                    <label>
-                        <input type="checkbox" name="option" id="optionB" value="B">B.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum>=3}">
-                <div class="radio">
-                    <label>
-                        <input type="checkbox" name="option" id="optionC" value="C">C.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum>=4}">
-                <div class="radio">
-                    <label>
-                        <input type="checkbox" name="option" id="optionD" value="D">D.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
-            <c:if test="${question.optionNum==5}">
-                <div class="radio">
-                    <label>
-                        <input type="checkbox" name="option" id="optionE" value="E">E.${question.optionB}
-                    </label>
-                </div>
-            </c:if>
+            <table style="width: 100%; margin-left: 10px;">
+                <tr>
+                    <td>
+                        <c:if test="${question.optionNum>=1}">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="${question.id}" id="optionA"
+                                           value="A">A.${question.optionA}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                    <td>
+                        <c:if test="${question.optionNum>=2}">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="${question.id}" id="optionB"
+                                           value="B">B.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <c:if test="${question.optionNum>=3}">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="${question.id}" id="optionC"
+                                           value="C">C.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                    <td>
+                        <c:if test="${question.optionNum>=4}">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="${question.id}" id="optionD"
+                                           value="D">D.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <c:if test="${question.optionNum==5}">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="${question.id}" id="optionE"
+                                           value="E">E.${question.optionB}
+                                </label>
+                            </div>
+                        </c:if>
+                    </td>
+                </tr>
+            </table>
         </c:if>
         <c:if test="${question.type==3}">
-            <div class="radio">
-                <label>
-                    <input type="radio" name="judge" value="true"> 正确
-                </label>
-                <label>
-                    <input type="radio" name="judge" value="false"> 错误
-                </label>
-            </div>
+            <table style="width: 100%; margin-left: -10px;">
+                <tr>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="radio" name="${question.id}" value="true"> 正确
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="radio" name="${question.id}" value="false"> 错误
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </c:if>
         <c:if test="${question.type==4}">
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label for="filling" class="col-sm-2 control-label">填空</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="filling" name="filling">
-                    </div>
-                </div>
-            </form>
+            <div style="margin-left: 15px;">
+                答案： <input type="text" id="filling"
+                           style="border: none; border-bottom:1px solid #000; width: 300px;"
+                           name="${question.id}">
+            </div>
         </c:if>
         <c:if test="${question.type==5}">
-            <div class="form-group">
-                <label for="essay">答案</label>
-                <textarea class="form-control" id="essay" name="essay" rows="3"></textarea>
-            </div>
+            <table style="width: 100%; margin-left: 15px;">
+                <tr>
+                    <td style="vertical-align: top; width: 50px;">
+                        答案：
+                    </td>
+                    <td>
+                        <textarea class="form-control" id="essay" name="${question.id}" rows="3"></textarea>
+                    </td>
+                </tr>
+            </table>
         </c:if>
     </div>
 </div>
